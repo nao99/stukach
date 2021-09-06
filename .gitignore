@@ -1,0 +1,11 @@
+.idea
+.gradle
+build
+
+claim/build
+common-testing/build
+
+dev/.env
+docker
+
+

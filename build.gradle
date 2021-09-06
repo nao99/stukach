@@ -1,0 +1,42 @@
+plugins {
+    id "idea"
+    id "io.spring.dependency-management" version "${springDependencyManagementVersion}"
+    id "org.springframework.boot" version "${springBootPluginVersion}" apply false
+    id "com.google.cloud.tools.jib" version "${jibVersion}" apply false
+}
+
+idea {
+    project {
+        languageLevel = JavaVersion.VERSION_11
+    }
+
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+allprojects {
+    group "org.ndbs"
+    version "${projectVersion}"
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: "io.spring.dependency-management"
+
+    dependencyManagement {
+        dependencies {
+            imports {
+                mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootDependenciesVersion}")
+            }
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            failOnVersionConflict()
+        }
+    }
+}

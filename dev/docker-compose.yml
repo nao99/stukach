@@ -1,0 +1,31 @@
+version: '3.4'
+
+# ---------------------------------------------------------
+# Network Configuration
+# ---------------------------------------------------------
+networks:
+  main:
+    ipam:
+      config:
+        - subnet: 172.55.1.0/24
+
+# *************************************************************
+# Services Configuration
+# *************************************************************
+services:
+  # ------------------------
+  # Claims Database
+  # ------------------------
+  claims-db:
+    image: postgres:12.2
+    restart: on-failure
+    networks:
+      main:
+        ipv4_address: 172.55.1.2
+    volumes:
+      - ${LOGS_DIR}/psql:/var/log/postgresql
+      - ${VOLUMES_DIR}/psql:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_DATABASE_CLAIMS}
+      POSTGRES_USER: ${DB_USER_CLAIMS}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_CLAIMS}

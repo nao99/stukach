@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    username: "dbuser"
+    password: "dbuser"
+    url: "jdbc:postgresql://172.55.1.2/app"
+
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: "debug"
