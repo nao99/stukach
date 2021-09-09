@@ -1,3 +1,4 @@
 rootProject.name = "stukach"
 include "claim"
 include "common-testing"
+include "common-filesystem"
