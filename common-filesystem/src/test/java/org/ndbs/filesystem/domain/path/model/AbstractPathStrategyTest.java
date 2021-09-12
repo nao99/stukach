@@ -1,8 +1,8 @@
-package org.ndbs.filesystem.domain.model.strategy;
+package org.ndbs.filesystem.domain.path.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.ndbs.filesystem.domain.model.AwesomeFile;
+import org.ndbs.filesystem.domain.filesystem.model.AwesomeFile;
 
 import java.util.UUID;
 

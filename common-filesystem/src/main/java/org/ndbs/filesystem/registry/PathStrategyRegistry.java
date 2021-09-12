@@ -1,8 +1,7 @@
-package org.ndbs.filesystem.domain.registry;
+package org.ndbs.filesystem.registry;
 
-import org.ndbs.filesystem.domain.PathStrategyRegistryException;
-import org.ndbs.filesystem.domain.model.strategy.DefaultPathStrategy;
-import org.ndbs.filesystem.domain.model.strategy.PathStrategy;
+import org.ndbs.filesystem.domain.path.PathStrategyNotFoundException;
+import org.ndbs.filesystem.domain.path.model.PathStrategy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +18,6 @@ public class PathStrategyRegistry {
 
     private PathStrategyRegistry() {
         this.strategies = new HashMap<>();
-
-        var defaultPathStrategy = DefaultPathStrategy.create();
-        addStrategy(defaultPathStrategy);
     }
 
     public static PathStrategyRegistry create() {
@@ -33,16 +29,16 @@ public class PathStrategyRegistry {
     }
 
     public void addStrategy(PathStrategy strategy) {
-        if (strategies.containsKey(strategy.getName())) {
+        if (hasStrategy(strategy.getName())) {
             return;
         }
 
         strategies.put(strategy.getName(), strategy);
     }
 
-    public PathStrategy getStrategy(String name) throws PathStrategyRegistryException {
+    public PathStrategy getStrategy(String name) throws PathStrategyNotFoundException {
         if (!hasStrategy(name)) {
-            throw new PathStrategyRegistryException(String.format("Strategy \"%s\" is not registered", name));
+            throw new PathStrategyNotFoundException(String.format("Strategy \"%s\" is not registered", name));
         }
 
         return strategies.get(name);

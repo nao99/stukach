@@ -1,4 +1,4 @@
-package org.ndbs.filesystem.domain.model;
+package org.ndbs.filesystem.domain.filesystem.model;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,14 +10,14 @@ import java.io.File;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * FilesystemResourceTest class
+ * FileSystemResourceTest class
  *
  * @author  Nikolai Osipov <nao99.dev@gmail.com>
  * @version 2.0.0
  * @since   2021-09-09
  */
-@DisplayName("FilesystemResource test: Test for the Filesystem Resource class")
-class FilesystemResourceTest {
+@DisplayName("FileSystemResource test: Test for the File System Resource class")
+class FileSystemResourceTest {
     private File tempFile;
 
     @BeforeEach
@@ -30,25 +30,11 @@ class FilesystemResourceTest {
         this.tempFile.deleteOnExit();
     }
 
-    @DisplayName("Should get a zero size of temp file")
-    @Test
-    void shouldGetZeroSizeOfTempFile() throws Exception {
-        // given
-        var resource = FilesystemResource.asRoot(tempFile.getPath());
-
-        // when
-        var filesize = resource.getFilesize();
-
-        // then
-        assertThat(filesize)
-            .isZero();
-    }
-
     @DisplayName("Should get \"video/mp4\" mime type of temp file")
     @Test
     void shouldGetVideoMp4MimeTypeOfTempFile() throws Exception {
         // given
-        var resource = FilesystemResource.asRoot(tempFile.getPath());
+        var resource = FileSystemResource.fromRoot(tempFile.getPath());
 
         // when
         var mimeType = resource.getMimeType();
@@ -62,10 +48,10 @@ class FilesystemResourceTest {
     @Test
     void shouldGetNameOfTempFile() throws Exception {
         // given
-        var resource = FilesystemResource.asRoot(tempFile.getPath());
+        var resource = FileSystemResource.fromRoot(tempFile.getPath());
 
         // when
-        var name = resource.getName();
+        var name = resource.getFilename();
 
         // then
         assertThat(name)
@@ -76,7 +62,7 @@ class FilesystemResourceTest {
     @Test
     void shouldGetMp4ExtensionOfTempFile() throws Exception {
         // given
-        var resource = FilesystemResource.asRoot(tempFile.getPath());
+        var resource = FileSystemResource.fromRoot(tempFile.getPath());
 
         // when
         var extension = resource.getExtension();
@@ -90,13 +76,13 @@ class FilesystemResourceTest {
     @Test
     void shouldGetAbsolutePathOfTempFile() throws Exception {
         // given
-        var resource = FilesystemResource.asRoot(tempFile.getPath());
+        var resource = FileSystemResource.fromRoot(tempFile.getPath());
 
         // when
-        var absolutePath = resource.getAbsolutePath();
+        var path = resource.getPath();
 
         // then
-        assertThat(absolutePath)
+        assertThat(path.toString())
             .isEqualTo(tempFile.getPath());
     }
 }

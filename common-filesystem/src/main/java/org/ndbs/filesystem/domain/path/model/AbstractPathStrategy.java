@@ -1,7 +1,7 @@
-package org.ndbs.filesystem.domain.model.strategy;
+package org.ndbs.filesystem.domain.path.model;
 
-import org.ndbs.filesystem.domain.PathStrategyException;
-import org.ndbs.filesystem.domain.model.File;
+import org.ndbs.filesystem.domain.path.PathStrategyException;
+import org.ndbs.filesystem.domain.filesystem.model.File;
 
 /**
  * AbstractPathStrategy class

@@ -1,4 +1,6 @@
-package org.ndbs.filesystem.domain;
+package org.ndbs.filesystem.domain.path;
+
+import org.ndbs.filesystem.domain.filesystem.FileSystemException;
 
 /**
  * PathStrategyException class
@@ -7,7 +9,7 @@ package org.ndbs.filesystem.domain;
  * @version 2.0.0
  * @since   2020-07-12
  */
-public class PathStrategyException extends FilesystemException {
+public class PathStrategyException extends FileSystemException {
     public PathStrategyException(String message) {
         super(message);
     }

@@ -1,11 +1,11 @@
-package org.ndbs.filesystem.domain.registry;
+package org.ndbs.filesystem.registry;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.ndbs.filesystem.domain.PathStrategyRegistryException;
-import org.ndbs.filesystem.domain.model.strategy.AwesomePathStrategy;
-import org.ndbs.filesystem.domain.model.strategy.DefaultPathStrategy;
+import org.ndbs.filesystem.domain.path.PathStrategyNotFoundException;
+import org.ndbs.filesystem.domain.path.model.AwesomePathStrategy;
+import org.ndbs.filesystem.domain.path.model.DefaultPathStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @version 2.0.0
  * @since   2021-09-09
  */
-@DisplayName("PathStrategyRegistry test: Test for te Path Strategy Registry")
+@DisplayName("PathStrategyRegistry test: Test for the Path Strategy Registry")
 class PathStrategyRegistryTest {
     private PathStrategyRegistry registry;
 
@@ -26,16 +26,16 @@ class PathStrategyRegistryTest {
         registry = PathStrategyRegistry.create();
     }
 
-    @DisplayName("Should has a default strategy and has not another after creation")
+    @DisplayName("Should not has default strategy after creation")
     @Test
-    void shouldHasDefaultStrategyAndHasNotAnotherAfterCreation() throws Exception {
+    void shouldNotHasDefaultStrategyAfterCreation() throws Exception {
         // when
         var hasDefaultStrategy = registry.hasStrategy(DefaultPathStrategy.NAME);
         var hasUnknownStrategy = registry.hasStrategy("test_path_strategy_name");
 
         // then
         assertThat(hasDefaultStrategy)
-            .isTrue();
+            .isFalse();
 
         assertThat(hasUnknownStrategy)
             .isFalse();
@@ -57,21 +57,10 @@ class PathStrategyRegistryTest {
             .isTrue();
     }
 
-    @DisplayName("Should get a default strategy")
-    @Test
-    void shouldGetDefaultStrategy() throws Exception {
-        // when
-        var strategy = registry.getStrategy(DefaultPathStrategy.NAME);
-
-        // then
-        assertThat(strategy.getName())
-            .isEqualTo(DefaultPathStrategy.NAME);
-    }
-
     @DisplayName("Should throw an exception when registry does not contain a strategy")
     @Test
     void shouldThrowExceptionWhenRegistryDoesNotContainStrategy() throws Exception {
         // when / then
-        assertThrows(PathStrategyRegistryException.class, () -> registry.getStrategy("test_path_strategy_name"));
+        assertThrows(PathStrategyNotFoundException.class, () -> registry.getStrategy("test_path_strategy_name"));
     }
 }

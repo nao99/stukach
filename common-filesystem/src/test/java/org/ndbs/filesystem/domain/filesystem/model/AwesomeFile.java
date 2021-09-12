@@ -1,4 +1,4 @@
-package org.ndbs.filesystem.domain.model;
+package org.ndbs.filesystem.domain.filesystem.model;
 
 import java.util.UUID;
 
