@@ -12,6 +12,7 @@ import org.ndbs.filesystem.domain.filesystem.model.FileSystemResource;
 public interface FileSystemService {
     /**
      * Copies a {@link FileSystemResource} from one place to another
+     * Available only for files (not directories)
      *
      * @param source      a source resource
      * @param destination a destination resource
@@ -22,6 +23,7 @@ public interface FileSystemService {
 
     /**
      * Moves a {@link FileSystemResource} from one place to another
+     * Available only for files (not directories)
      *
      * @param source      a source resource
      * @param destination a destination resource
@@ -32,6 +34,7 @@ public interface FileSystemService {
 
     /**
      * Deletes a {@link FileSystemResource}
+     * Available for files and directories
      *
      * @param source a source resource
      * @throws FileSystemException if something was wrong

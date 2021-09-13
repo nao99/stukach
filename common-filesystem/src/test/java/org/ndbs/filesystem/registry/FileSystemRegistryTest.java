@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.ndbs.filesystem.domain.filesystem.FileSystemNotFoundException;
 import org.ndbs.filesystem.domain.filesystem.model.FileSystemId;
-import org.ndbs.filesystem.domain.filesystem.model.LocalFileSystem;
+import org.ndbs.filesystem.domain.filesystem.model.FileSystemImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +30,7 @@ class FileSystemRegistryTest {
     @Test
     void shouldNotHasLocalFileSystemByDefault() throws Exception {
         // when
-        var hasLocalFileSystem = registry.hasFileSystem(FileSystemId.local());
+        var hasLocalFileSystem = registry.hasFileSystem(FileSystemId.createLocal());
 
         // then
         assertThat(hasLocalFileSystem)
@@ -41,7 +41,7 @@ class FileSystemRegistryTest {
     @Test
     void shouldSuccessfullyAddNewFileSystem() throws Exception {
         // given
-        var expectedFileSystem = LocalFileSystem.create();
+        var expectedFileSystem = FileSystemImpl.create(FileSystemId.createLocal());
 
         // when
         registry.addFileSystem(expectedFileSystem);
@@ -56,6 +56,6 @@ class FileSystemRegistryTest {
     @Test
     void shouldThrowExceptionWhenRegistryDoesNotContainFileSystem() throws Exception {
         // when / then
-        assertThrows(FileSystemNotFoundException.class, () -> registry.getFileSystem(FileSystemId.local()));
+        assertThrows(FileSystemNotFoundException.class, () -> registry.getFileSystem(FileSystemId.createLocal()));
     }
 }

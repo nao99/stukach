@@ -26,7 +26,7 @@ public class FileSystemId {
         return new FileSystemId(id);
     }
 
-    public static FileSystemId local() {
+    public static FileSystemId createLocal() {
         return new FileSystemId(LOCAL);
     }
 

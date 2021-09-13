@@ -15,21 +15,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * LocalFileSystemTest class
+ * FileSystemImpl class
  *
  * @author  Nikolai Osipov <nao99.dev@gmail.com>
  * @version 2.0.0
  * @since   2021-09-12
  */
-@DisplayName("LocalFileSystem test: Test for the Local File System class")
-class LocalFileSystemTest {
+@DisplayName("FileSystemImpl test: Test for the Local File System class")
+class FileSystemImplTest {
     private File tempFile;
-    private LocalFileSystem localFileSystem;
+    private FileSystemImpl fileSystem;
 
     @BeforeEach
     void setUp() throws Exception {
         tempFile = File.createTempFile("awesome_file", ".mp4");
-        localFileSystem = LocalFileSystem.create();
+        fileSystem = FileSystemImpl.create(FileSystemId.createLocal());
     }
 
     @AfterEach
@@ -41,10 +41,10 @@ class LocalFileSystemTest {
     @Test
     void shouldGetLocalFileSystemId() throws Exception {
         // given
-        var expectedFileSystemId = FileSystemId.local();
+        var expectedFileSystemId = FileSystemId.createLocal();
 
         // when
-        var fileSystemId = localFileSystem.getFileSystemId();
+        var fileSystemId = fileSystem.getFileSystemId();
 
         // then
         assertThat(fileSystemId)
@@ -58,10 +58,10 @@ class LocalFileSystemTest {
         var tempFilePath = tempFile.toPath();
 
         // when
-        boolean localFileSystemHasTempFile = localFileSystem.has(tempFilePath);
+        boolean fileSystemHasTempFile = fileSystem.has(tempFilePath);
 
         // then
-        assertThat(localFileSystemHasTempFile)
+        assertThat(fileSystemHasTempFile)
             .isTrue();
     }
 
@@ -72,10 +72,10 @@ class LocalFileSystemTest {
         var tempFilePath = Path.of("/random_path_which/should_not_exists.mp4");
 
         // when
-        boolean localFileSystemHasTempFile = localFileSystem.has(tempFilePath);
+        boolean fileSystemHasTempFile = fileSystem.has(tempFilePath);
 
         // then
-        assertThat(localFileSystemHasTempFile)
+        assertThat(fileSystemHasTempFile)
             .isFalse();
     }
 
@@ -84,7 +84,7 @@ class LocalFileSystemTest {
     void shouldGetFileContentStreamOfExistedFile() throws Exception {
         // given
         var tempFilePath = tempFile.toPath();
-        try (var tempFileStream = localFileSystem.read(tempFilePath)) {
+        try (var tempFileStream = fileSystem.read(tempFilePath)) {
             // when
             var fileToWritePathString = buildTempFilePath("awesome_file_copy.mp4");
             var fileToWrite = new File(fileToWritePathString);
@@ -109,7 +109,7 @@ class LocalFileSystemTest {
         var incorrectFilePath = Path.of("/incorrect_file/path.mp4");
 
         // when / then
-        assertThrows(FileSystemIOException.class, () -> localFileSystem.read(incorrectFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.read(incorrectFilePath));
     }
 
     @DisplayName("Should write a file content by a path")
@@ -121,7 +121,7 @@ class LocalFileSystemTest {
 
         try (var fileContentStream = new FileInputStream(tempFile)) {
             // when
-            localFileSystem.write(filePathToWrite, fileContentStream);
+            fileSystem.write(filePathToWrite, fileContentStream);
             var writtenFile = filePathToWrite.toFile();
 
             // then
@@ -136,19 +136,19 @@ class LocalFileSystemTest {
         }
     }
 
-    @DisplayName("Should throw an exception if a file exists by passed path")
+    @DisplayName("Should throw an exception if a file exists by passed path when writing")
     @Test
-    void shouldThrowExceptionIfFileExistsBePassedPath() throws Exception {
+    void shouldThrowExceptionIfFileExistsBePassedPathWhenWriting() throws Exception {
         // given
         var fileToWritePathString = buildTempFilePath("test.mp4");
         var filePathToWrite = Path.of(fileToWritePathString);
 
         try (var fileContentStream = new FileInputStream(tempFile)) {
-            localFileSystem.write(filePathToWrite, fileContentStream);
+            fileSystem.write(filePathToWrite, fileContentStream);
             var writtenFile = filePathToWrite.toFile();
 
             // when / then
-            assertThrows(FileSystemIOException.class, () -> localFileSystem.write(filePathToWrite, fileContentStream));
+            assertThrows(FileSystemIOException.class, () -> fileSystem.write(filePathToWrite, fileContentStream));
 
             // clean
             writtenFile.delete();
@@ -165,7 +165,7 @@ class LocalFileSystemTest {
         var tempFilePathAfterRenaming = Path.of(tempFilePathAfterRenamingString);
 
         // when
-        localFileSystem.rename(tempFilePath, tempFilePathAfterRenaming);
+        fileSystem.rename(tempFilePath, tempFilePathAfterRenaming);
         var tempFileAfterRenaming = new File(tempFilePathAfterRenamingString);
 
         // then
@@ -186,7 +186,7 @@ class LocalFileSystemTest {
         var tempFilePath = tempFile.toPath();
 
         // when / then
-        assertDoesNotThrow(() -> localFileSystem.rename(tempFilePath, tempFilePath));
+        assertDoesNotThrow(() -> fileSystem.rename(tempFilePath, tempFilePath));
 
         assertThat(tempFile)
             .exists();
@@ -204,13 +204,13 @@ class LocalFileSystemTest {
         // when / then
         assertThrows(
             FileSystemIOException.class,
-            () -> localFileSystem.rename(incorrectOldFilePath, correctNewFilePath)
+            () -> fileSystem.rename(incorrectOldFilePath, correctNewFilePath)
         );
     }
 
-    @DisplayName("Should not throw any exception if a file exists by passed new path when renaming")
+    @DisplayName("Should throw an exception if a file exists by passed new path when renaming")
     @Test
-    void shouldNotThrowAnyExceptionIfFileExistsByPassedNedPathWhenRenaming() throws Exception {
+    void shouldThrowExceptionIfFileExistsByPassedNedPathWhenRenaming() throws Exception {
         // given
         var correctOldFilePath = tempFile.toPath();
 
@@ -221,7 +221,7 @@ class LocalFileSystemTest {
         FileUtils.copyFile(tempFile, tempFileCopy);
 
         // when / then
-        assertDoesNotThrow(() -> localFileSystem.rename(correctOldFilePath, correctNewFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.rename(correctOldFilePath, correctNewFilePath));
 
         // clean
         tempFileCopy.delete();
@@ -239,7 +239,7 @@ class LocalFileSystemTest {
         var tempFileCopy = new File(correctNewFilePathString);
 
         // when
-        localFileSystem.copy(correctOldFilePath, correctNewFilePath);
+        fileSystem.copy(correctOldFilePath, correctNewFilePath);
 
         // then
         assertThat(tempFile)
@@ -263,7 +263,7 @@ class LocalFileSystemTest {
         var correctOldFilePath = tempFile.toPath();
 
         // when / then
-        assertDoesNotThrow(() -> localFileSystem.copy(correctOldFilePath, correctOldFilePath));
+        assertDoesNotThrow(() -> fileSystem.copy(correctOldFilePath, correctOldFilePath));
 
         assertThat(tempFile)
             .exists();
@@ -279,12 +279,12 @@ class LocalFileSystemTest {
         var correctNewFilePath = Path.of(correctNewFilePathString);
 
         // when / then
-        assertThrows(FileSystemIOException.class, () -> localFileSystem.copy(incorrectOldFilePath, correctNewFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.copy(incorrectOldFilePath, correctNewFilePath));
     }
 
-    @DisplayName("Should not throw any exception if a file exists by passed new path when copying")
+    @DisplayName("Should throw an exception if a file exists by passed new path when copying")
     @Test
-    void shouldNotThrowAnyExceptionIfFileExistsByPassedNedPathWhenCopying() throws Exception {
+    void shouldThrowExceptionIfFileExistsByPassedNedPathWhenCopying() throws Exception {
         // given
         var correctOldFilePath = tempFile.toPath();
 
@@ -295,7 +295,7 @@ class LocalFileSystemTest {
         FileUtils.copyFile(tempFile, tempFileCopy);
 
         // when / then
-        assertDoesNotThrow(() -> localFileSystem.copy(correctOldFilePath, correctNewFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.copy(correctOldFilePath, correctNewFilePath));
 
         // clean
         tempFileCopy.delete();
@@ -308,21 +308,21 @@ class LocalFileSystemTest {
         var tempFilePath = tempFile.toPath();
 
         // when
-        localFileSystem.delete(tempFilePath);
+        fileSystem.delete(tempFilePath);
 
         // then
         assertThat(tempFile)
             .doesNotExist();
     }
 
-    @DisplayName("Should not throw any exception if a file does not exist by passed path when deleting")
+    @DisplayName("Should throw an exception if a file does not exist by passed path when deleting")
     @Test
-    void shouldNotThrowAnyExceptionIfFileDoesNotExistByPassedPathWhenDeleting() throws Exception {
+    void shouldThrowExceptionIfFileDoesNotExistByPassedPathWhenDeleting() throws Exception {
         // given
         var incorrectFilePath = Path.of("/incorrect/path.mp4");
 
         // when / then
-        assertDoesNotThrow(() -> localFileSystem.delete(incorrectFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.delete(incorrectFilePath));
     }
 
     @DisplayName("Should get a filesize of file")
@@ -333,7 +333,7 @@ class LocalFileSystemTest {
         var expectedFilesize = FileUtils.sizeOf(tempFile);
 
         // when
-        var filesize = localFileSystem.getSize(tempFilePath);
+        var filesize = fileSystem.getSize(tempFilePath);
 
         // then
         assertThat(filesize)
@@ -347,7 +347,7 @@ class LocalFileSystemTest {
         var incorrectFilePath = Path.of("/incorrect/path.mp4");
 
         // when / then
-        assertThrows(FileSystemIOException.class, () -> localFileSystem.getSize(incorrectFilePath));
+        assertThrows(FileSystemIOException.class, () -> fileSystem.getSize(incorrectFilePath));
     }
 
     private String buildTempFilePath(String filename) {

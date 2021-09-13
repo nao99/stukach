@@ -37,7 +37,7 @@ public class FileSystemResource {
     }
 
     public static FileSystemResource fromRoot(Path path) {
-        var fileSystemId = FileSystemId.local();
+        var fileSystemId = FileSystemId.createLocal();
         return new FileSystemResource(fileSystemId, path);
     }
 
@@ -53,15 +53,11 @@ public class FileSystemResource {
         return path;
     }
 
-    public boolean isLocal() {
-        return fileSystemId.isLocal();
-    }
-
     public String getMimeType() throws FileSystemResourceException {
         try {
             return Files.probeContentType(path);
         } catch (IOException e) {
-            throw new FileSystemResourceException(String.format("File \"%s\" was not found", path), e);
+            throw new FileSystemResourceException(e.getMessage(), e);
         }
     }
 
@@ -95,5 +91,13 @@ public class FileSystemResource {
     @Override
     public int hashCode() {
         return Objects.hash(fileSystemId, path);
+    }
+
+    @Override
+    public String toString() {
+        return "FileSystemResource{" +
+            "fileSystemId=" + fileSystemId +
+            ", path=" + path +
+            '}';
     }
 }

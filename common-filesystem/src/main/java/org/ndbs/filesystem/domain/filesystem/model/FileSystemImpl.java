@@ -1,26 +1,24 @@
 package org.ndbs.filesystem.domain.filesystem.model;
 
-import org.apache.commons.io.FileUtils;
 import org.ndbs.filesystem.domain.filesystem.FileSystemException;
 import org.ndbs.filesystem.domain.filesystem.FileSystemIOException;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * FileSystem class
+ * FileSystemImpl class
  *
  * @author  Nikolai Osipov <nao99.dev@gmail.com>
  * @version 2.0.0
  * @since   2021-09-12
  */
-public class LocalFileSystem implements FileSystem {
+public class FileSystemImpl implements FileSystem {
     private final FileSystemId fileSystemId;
 
-    private LocalFileSystem(FileSystemId fileSystemId) {
+    private FileSystemImpl(FileSystemId fileSystemId) {
         if (fileSystemId == null) {
             throw new IllegalArgumentException("Filesystem id should not be null");
         }
@@ -28,9 +26,8 @@ public class LocalFileSystem implements FileSystem {
         this.fileSystemId = fileSystemId;
     }
 
-    public static LocalFileSystem create() {
-        var fileSystemId = FileSystemId.local();
-        return new LocalFileSystem(fileSystemId);
+    public static FileSystemImpl create(FileSystemId fileSystemId) {
+        return new FileSystemImpl(fileSystemId);
     }
 
     @Override
@@ -39,17 +36,14 @@ public class LocalFileSystem implements FileSystem {
     }
 
     @Override
-    public boolean has(Path path) throws FileSystemException {
+    public boolean has(Path path) {
         return Files.exists(path);
     }
 
     @Override
     public InputStream read(Path path) throws FileSystemException {
         try {
-            var file = path.toFile();
-            var fileInputStream = FileUtils.openInputStream(file);
-
-            return new BufferedInputStream(fileInputStream);
+            return Files.newInputStream(path);
         } catch (IOException e) {
             throw new FileSystemIOException(e.getMessage(), e);
         }
@@ -58,8 +52,7 @@ public class LocalFileSystem implements FileSystem {
     @Override
     public void write(Path path, InputStream fileContent) throws FileSystemException {
         try {
-            var fileToWrite = path.toFile();
-            FileUtils.copyInputStreamToFile(fileContent, fileToWrite);
+            Files.copy(fileContent, path);
         } catch (IOException e) {
             throw new FileSystemIOException(e.getMessage(), e);
         }
@@ -82,27 +75,26 @@ public class LocalFileSystem implements FileSystem {
         }
 
         try {
-            var oldFile = oldPath.toFile();
-            var newFile = newPath.toFile();
-
-            FileUtils.copyFile(oldFile, newFile);
+            Files.copy(oldPath, newPath);
         } catch (IOException e) {
             throw new FileSystemIOException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void delete(Path path) throws FileSystemException {
-        var file = path.toFile();
-        FileUtils.deleteQuietly(file);
+    public void delete(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new FileSystemIOException(e.getMessage(), e);
+        }
     }
 
     @Override
     public long getSize(Path path) throws FileSystemException {
         try {
-            var file = path.toFile();
-            return FileUtils.sizeOf(file);
-        } catch (IllegalArgumentException e) {
+            return Files.size(path);
+        } catch (IOException e) {
             throw new FileSystemIOException(e.getMessage(), e);
         }
     }

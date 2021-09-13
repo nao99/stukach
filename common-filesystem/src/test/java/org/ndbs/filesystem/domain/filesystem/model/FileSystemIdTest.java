@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * FileSystemIdTest class
  *
  * @author  Nikolai Osipov <nao99.dev@gmail.com>
- * @version 1.0.0
+ * @version 2.0.0
  * @since   2021-09-12
  */
 @DisplayName("FileSystemId test: Test for the Filesystem Id class")
@@ -43,7 +43,7 @@ class FileSystemIdTest {
         var expectedFileSystemIdString = "local";
 
         // when
-        var fileSystemId = FileSystemId.local();
+        var fileSystemId = FileSystemId.createLocal();
 
         // then
         assertThat(fileSystemId.getId())
