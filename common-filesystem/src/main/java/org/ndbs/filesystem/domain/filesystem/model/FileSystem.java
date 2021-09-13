@@ -14,13 +14,6 @@ import java.nio.file.Path;
  */
 public interface FileSystem {
     /**
-     * Gets a {@link FileSystemId} of this filesystem
-     *
-     * @return a filesystem id
-     */
-    FileSystemId getFileSystemId();
-
-    /**
      * Checks if a file exists by {@link Path}
      *
      * @param path a file path

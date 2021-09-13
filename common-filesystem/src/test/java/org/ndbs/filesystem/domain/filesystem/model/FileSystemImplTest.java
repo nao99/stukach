@@ -29,26 +29,12 @@ class FileSystemImplTest {
     @BeforeEach
     void setUp() throws Exception {
         tempFile = File.createTempFile("awesome_file", ".mp4");
-        fileSystem = FileSystemImpl.create(FileSystemId.createLocal());
+        fileSystem = FileSystemImpl.create();
     }
 
     @AfterEach
     void tearDown() throws Exception {
         tempFile.delete();
-    }
-
-    @DisplayName("Should get a local filesystem id")
-    @Test
-    void shouldGetLocalFileSystemId() throws Exception {
-        // given
-        var expectedFileSystemId = FileSystemId.createLocal();
-
-        // when
-        var fileSystemId = fileSystem.getFileSystemId();
-
-        // then
-        assertThat(fileSystemId)
-            .isEqualTo(expectedFileSystemId);
     }
 
     @DisplayName("Should has a file by path")

@@ -16,23 +16,11 @@ import java.nio.file.Path;
  * @since   2021-09-12
  */
 public class FileSystemImpl implements FileSystem {
-    private final FileSystemId fileSystemId;
-
-    private FileSystemImpl(FileSystemId fileSystemId) {
-        if (fileSystemId == null) {
-            throw new IllegalArgumentException("Filesystem id should not be null");
-        }
-
-        this.fileSystemId = fileSystemId;
+    private FileSystemImpl() {
     }
 
-    public static FileSystemImpl create(FileSystemId fileSystemId) {
-        return new FileSystemImpl(fileSystemId);
-    }
-
-    @Override
-    public FileSystemId getFileSystemId() {
-        return fileSystemId;
+    public static FileSystemImpl create() {
+        return new FileSystemImpl();
     }
 
     @Override

@@ -23,7 +23,7 @@ public interface PathStrategy {
      *
      * @param file a file
      *
-     * @return a built storage's path
+     * @return a file path
      * @throws PathStrategyException if a path cannot be built
      */
     String buildPath(File file) throws PathStrategyException;
