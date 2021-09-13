@@ -29,3 +29,36 @@ services:
       POSTGRES_DB: ${DB_DATABASE_CLAIMS}
       POSTGRES_USER: ${DB_USER_CLAIMS}
       POSTGRES_PASSWORD: ${DB_PASSWORD_CLAIMS}
+
+  # ------------------------
+  # Files Database
+  # ------------------------
+  files-db:
+    image: postgres:12.2
+    restart: on-failure
+    networks:
+      main:
+        ipv4_address: 172.55.1.3
+    volumes:
+      - ${LOGS_DIR}/psql:/var/log/postgresql
+      - ${VOLUMES_DIR}/psql:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_DATABASE_FILES}
+      POSTGRES_USER: ${DB_USER_FILES}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_FILES}
+
+  # ------------------------
+  # Files S3 Storage
+  # ------------------------
+  files-s3-storage:
+    image: minio/minio
+    restart: on-failure
+    networks:
+      main:
+        ipv4_address: 172.55.1.4
+    volumes:
+      - ${S3_FILES_DATA}:/data
+    environment:
+      MINIO_ROOT_USER: ${S3_FILES_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${S3_FILES_ROOT_PASSWORD}
+    command: server /data

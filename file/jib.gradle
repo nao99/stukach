@@ -1,0 +1,14 @@
+jib {
+    container.creationTime = "USE_CURRENT_TIMESTAMP"
+    from {
+        image = "bellsoft/liberica-openjdk-alpine-musl:11.0.12-7-x86_64"
+    }
+    to {
+        tags = ["v1", "latest"]
+        image = "ghcr.io/nao99/stukach/stukach-file"
+        auth {
+            username = githubUser
+            password = githubPassword
+        }
+    }
+}

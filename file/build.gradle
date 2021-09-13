@@ -1,0 +1,35 @@
+plugins {
+    id "java"
+    id "org.springframework.boot"
+    id "com.google.cloud.tools.jib"
+}
+
+apply from: "jib.gradle"
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+    implementation "com.upplication:s3fs:${amazonS3FileSystemProviderVersion}"
+
+    implementation "javax.validation:validation-api"
+    implementation "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
+
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.postgresql:postgresql"
+
+    implementation project(":common-filesystem")
+
+    testImplementation project(":common-testing")
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "com.google.code.gson:gson:${gsonVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}

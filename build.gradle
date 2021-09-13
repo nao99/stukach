@@ -37,6 +37,9 @@ allprojects {
 
     configurations.all {
         resolutionStrategy {
+            force "com.google.code.findbugs:jsr305:${jsr305Version}"
+            force "org.checkerframework:checker-qual:${checkerQualVersion}"
+
             failOnVersionConflict()
         }
     }

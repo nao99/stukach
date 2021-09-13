@@ -1,0 +1,9 @@
+###
+POST http://localhost:8080/api/v1.0/files
+Accept: */*
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Cache-Control: no-cache
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"
+Content-Type: text/plain
