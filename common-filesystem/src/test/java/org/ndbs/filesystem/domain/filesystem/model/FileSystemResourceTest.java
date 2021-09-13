@@ -22,12 +22,12 @@ class FileSystemResourceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.tempFile = File.createTempFile("awesome_file", ".mp4");
+        tempFile = File.createTempFile("awesome_file", ".mp4");
     }
 
     @AfterEach
     void tearDown() throws Exception {
-        this.tempFile.deleteOnExit();
+        tempFile.deleteOnExit();
     }
 
     @DisplayName("Should get \"video/mp4\" mime type of temp file")

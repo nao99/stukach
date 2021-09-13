@@ -31,7 +31,7 @@ public class FileSystemServiceImpl implements FileSystemService {
             return;
         }
 
-        try (var sourceContent = sourceFileSystem.read(source.getPath());) {
+        try (var sourceContent = sourceFileSystem.read(source.getPath())) {
             destinationFileSystem.write(destination.getPath(), sourceContent);
         } catch (IOException e) {
             throw new FileSystemException(e.getMessage(), e);
