@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +33,11 @@ public class AwsS3Configuration {
     }
 
     @Bean
-    public S3FileSystem amazonS3FileSystem() throws IOException {
+    public FileSystem amazonS3FileSystem() throws IOException {
         var s3Uri = buildS3Uri();
         var env = mapS3PropertiesToMap();
 
-        return (S3FileSystem) FileSystems.newFileSystem(s3Uri, env);
+        return FileSystems.newFileSystem(s3Uri, env);
     }
 
     /**
