@@ -32,7 +32,7 @@ app:
       accessKey: "access key"
       secretKey: "secret key"
 
+    protocol: "HTTPS"
     endpoint: "localhost"
     signerOverride: "AWSS3V4SignerType"
     pathStyleAccessEnabled: true
-    region.static: us-east-1

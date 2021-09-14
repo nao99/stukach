@@ -1,21 +1,16 @@
 package org.ndbs.file.config;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.upplication.s3fs.S3FileSystem;
-import com.upplication.s3fs.S3FileSystemProvider;
-import org.ndbs.filesystem.domain.filesystem.FileSystemServiceImpl;
-import org.ndbs.filesystem.domain.filesystem.FileSystemService;
-import org.ndbs.filesystem.domain.filesystem.model.FileSystemImpl;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.nio.file.FileSystem;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystems;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * AwsConfiguration class
@@ -25,59 +20,68 @@ import java.nio.file.FileSystem;
  * @since   2021-09-09
  */
 @Configuration
+@EnableConfigurationProperties({AwsS3ConfigurationProperties.class})
 public class AwsS3Configuration {
-    @Value("${app.aws.credentials.accessKey}")
-    private String accessKey;
+    private static final String S3_URI_PATTERN = "s3://%s@%s";
 
-    @Value("${app.aws.credentials.secretKey}")
-    private String secretKey;
+    private final AwsS3ConfigurationProperties s3ConfigurationProperties;
 
-    @Value("${app.aws.region.static}")
-    private String region;
-
-    @Value("${app.aws.endpoint}")
-    private String endpoint;
-
-    @Value("${app.aws.signerOverride}")
-    private String signerOverride;
-
-    @Value("${app.aws.pathStyleAccessEnabled}")
-    private Boolean pathStyleAccessEnabled;
-
-    @Bean
-    public AmazonS3 amazonS3() {
-        var awsEndpointConfiguration = new AwsClientBuilder.EndpointConfiguration(endpoint, region);
-
-        var clientConfiguration = new ClientConfiguration()
-            .withSignerOverride(signerOverride);
-
-        var awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        var awsStaticCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
-
-        return AmazonS3Client.builder()
-            .withEndpointConfiguration(awsEndpointConfiguration)
-            .withPathStyleAccessEnabled(pathStyleAccessEnabled)
-            .withClientConfiguration(clientConfiguration)
-            .withCredentials(awsStaticCredentialsProvider)
-            .build();
+    @Autowired
+    public AwsS3Configuration(AwsS3ConfigurationProperties s3ConfigurationProperties) {
+        this.s3ConfigurationProperties = s3ConfigurationProperties;
     }
 
     @Bean
-    public FileSystem amazonS3FileSystem() {
-        var s3FileSystemProvider = new S3FileSystemProvider();
-        var client = amazonS3();
+    public S3FileSystem amazonS3FileSystem() throws IOException {
+        var s3Uri = buildS3Uri();
+        var env = mapS3PropertiesToMap();
 
-        return new S3FileSystem(s3FileSystemProvider, null, client, endpoint);
+        return (S3FileSystem) FileSystems.newFileSystem(s3Uri, env);
     }
 
-    @Bean
-    public org.ndbs.filesystem.domain.filesystem.model.FileSystem fileSystem() {
-        return FileSystemImpl.create();
+    /**
+     * Builds a {@link URI} to ease tune the {@link S3FileSystem} <br>
+     * It requires the: <br>
+     *  - s3 (schema) <br>
+     *  - access key (authority) <br>
+     *  - endpoint (host) <br>
+     *
+     * What does a URI consist of - see
+     * <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Syntax">this page</a>
+     *
+     * @return an s3 uri
+     */
+    private URI buildS3Uri() {
+        var credentials = s3ConfigurationProperties.getCredentials();
+
+        var accessKey = credentials.getAccessKey();
+        var endpoint = s3ConfigurationProperties.getEndpoint();
+
+        var s3UriString = String.format(S3_URI_PATTERN, accessKey, endpoint);
+
+        return URI.create(s3UriString);
     }
 
-    @Bean
-    public FileSystemService filesystemService() {
-        var fileSystem = fileSystem();
-        return FileSystemServiceImpl.create(fileSystem);
+    /**
+     * Maps properties from the {@link AwsS3ConfigurationProperties} to a simple map <br>
+     * It required to ease tune the {@link S3FileSystem} <br>
+     *
+     * Everything map keys are certain AWS S3 properties <br>
+     * The full properties list you can see <a href="https://github.com/Upplication/Amazon-S3-FileSystem-NIO2">here</a>
+     *
+     * @return mapped properties
+     */
+    private Map<String, Object> mapS3PropertiesToMap() {
+        Map<String, Object> propertiesMap = new HashMap<>();
+
+        var credentials = s3ConfigurationProperties.getCredentials();
+
+        propertiesMap.put("s3fs_access_key", credentials.getAccessKey());
+        propertiesMap.put("s3fs_secret_key", credentials.getSecretKey());
+        propertiesMap.put("s3fs_protocol", s3ConfigurationProperties.getProtocol());
+        propertiesMap.put("s3fs_signer_override", s3ConfigurationProperties.getSignerOverride());
+        propertiesMap.put("s3fs_path_style_access", s3ConfigurationProperties.isPathStyleAccessEnabled());
+
+        return propertiesMap;
     }
 }

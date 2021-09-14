@@ -24,7 +24,7 @@ app:
       accessKey: "s3key"
       secretKey: "s3secret"
 
-    endpoint: "http://172.55.1.4:9000"
+    protocol: "HTTP"
+    endpoint: "172.55.1.4:9000"
     signerOverride: "AWSS3V4SignerType"
     pathStyleAccessEnabled: true
-    region.static: us-east-1
