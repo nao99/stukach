@@ -1,6 +1,6 @@
 package org.ndbs.filesystem.domain.filesystem;
 
-import org.ndbs.filesystem.domain.filesystem.model.FileSystemResource;
+import java.nio.file.Path;
 
 /**
  * FileSystemService interface
@@ -11,7 +11,7 @@ import org.ndbs.filesystem.domain.filesystem.model.FileSystemResource;
  */
 public interface FileSystemService {
     /**
-     * Copies a {@link FileSystemResource} from one place to another
+     * Copies a {@link Path} from one place to another
      * Available only for files (not directories)
      *
      * @param source      a source resource
@@ -19,10 +19,10 @@ public interface FileSystemService {
      *
      * @throws FileSystemException if something was wrong
      */
-    void copy(FileSystemResource source, FileSystemResource destination) throws FileSystemException;
+    void copy(Path source, Path destination) throws FileSystemException;
 
     /**
-     * Moves a {@link FileSystemResource} from one place to another
+     * Moves a {@link Path} from one place to another
      * Available only for files (not directories)
      *
      * @param source      a source resource
@@ -30,14 +30,14 @@ public interface FileSystemService {
      *
      * @throws FileSystemException if something was wrong
      */
-    void move(FileSystemResource source, FileSystemResource destination) throws FileSystemException;
+    void move(Path source, Path destination) throws FileSystemException;
 
     /**
-     * Deletes a {@link FileSystemResource}
+     * Deletes a {@link Path}
      * Available for files and directories
      *
      * @param source a source resource
      * @throws FileSystemException if something was wrong
      */
-    void delete(FileSystemResource source) throws FileSystemException;
+    void delete(Path source) throws FileSystemException;
 }

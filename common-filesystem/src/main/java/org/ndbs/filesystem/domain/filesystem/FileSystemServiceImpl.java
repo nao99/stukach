@@ -1,9 +1,9 @@
 package org.ndbs.filesystem.domain.filesystem;
 
 import org.ndbs.filesystem.domain.filesystem.model.FileSystem;
-import org.ndbs.filesystem.domain.filesystem.model.FileSystemResource;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * FileSystemServiceImpl class
@@ -28,22 +28,22 @@ public class FileSystemServiceImpl implements FileSystemService {
     }
 
     @Override
-    public void copy(FileSystemResource source, FileSystemResource destination) throws FileSystemException {
-        try (var sourceContent = fileSystem.read(source.getPath())) {
-            fileSystem.write(destination.getPath(), sourceContent);
+    public void copy(Path source, Path destination) throws FileSystemException {
+        try (var sourceContent = fileSystem.read(source)) {
+            fileSystem.write(destination, sourceContent);
         } catch (IOException e) {
             throw new FileSystemIOException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void move(FileSystemResource source, FileSystemResource destination) throws FileSystemException {
+    public void move(Path source, Path destination) throws FileSystemException {
         copy(source, destination);
-        fileSystem.delete(source.getPath());
+        fileSystem.delete(source);
     }
 
     @Override
-    public void delete(FileSystemResource source) throws FileSystemException {
-        fileSystem.delete(source.getPath());
+    public void delete(Path source) throws FileSystemException {
+        fileSystem.delete(source);
     }
 }
