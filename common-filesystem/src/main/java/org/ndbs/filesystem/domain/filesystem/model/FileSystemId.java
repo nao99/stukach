@@ -57,6 +57,10 @@ public class FileSystemId {
         return new FileSystemId(id, LOCAL_FIRST, scheme);
     }
 
+    public static FileSystemId create(String id) {
+        return new FileSystemId(id, LOCAL_FIRST, LOCAL_SCHEME);
+    }
+
     public static FileSystemId createLocal() {
         return new FileSystemId(LOCAL_ID, LOCAL_FIRST, LOCAL_SCHEME);
     }
