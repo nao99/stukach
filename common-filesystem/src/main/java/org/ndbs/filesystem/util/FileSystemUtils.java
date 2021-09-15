@@ -16,13 +16,17 @@ import java.nio.file.ProviderNotFoundException;
  * @since   2021-09-14
  */
 public class FileSystemUtils {
+    private FileSystemUtils() {}
+
     /**
      * Gets a {@link FileSystem} by {@link FileSystemId}
      *
      * @param fileSystemId a filesystem id
+     *
      * @return a filesystem
+     * @throws FileSystemNotFoundException if a filesystem was not found
      */
-    public static FileSystem getFileSystemBy(FileSystemId fileSystemId) {
+    public static FileSystem getFileSystemBy(FileSystemId fileSystemId) throws FileSystemNotFoundException {
         var fileSystemUri = URI.create(String.format("%s:///", fileSystemId.getScheme()));
         try {
             return FileSystems.getFileSystem(fileSystemUri);

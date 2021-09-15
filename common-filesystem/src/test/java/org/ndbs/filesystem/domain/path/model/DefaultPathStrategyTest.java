@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @version 2.0.0
  * @since   2021-09-09
  */
-@DisplayName("DefaultPathStrategy test: Test for the Default Path Strategy class")
+@DisplayName("DefaultPathStrategy test: Test for the Default Path Strategy")
 class DefaultPathStrategyTest {
     @DisplayName("Should build a correct file path")
     @Test

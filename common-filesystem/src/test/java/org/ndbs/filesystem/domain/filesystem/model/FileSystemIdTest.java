@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @version 2.0.0
  * @since   2021-09-12
  */
-@DisplayName("FileSystemId test: Test for the Filesystem Id class")
+@DisplayName("FileSystemId test: Test for the Filesystem Id")
 class FileSystemIdTest {
     @DisplayName("Should create a filesystem id with \"s3\" id and \"s3\" scheme")
     @Test
