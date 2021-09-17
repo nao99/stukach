@@ -22,6 +22,9 @@ public class File implements org.ndbs.filesystem.domain.filesystem.model.File {
     @Id
     private final UUID id;
 
+    /**
+     * In fact, supports only S3 filesystem
+     */
     @Column("filesystem_id")
     private final FileSystemId filesystemId;
     private final PathStrategy pathStrategy;

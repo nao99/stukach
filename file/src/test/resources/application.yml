@@ -1,0 +1,23 @@
+app:
+  rest:
+    api:
+      prefix: "api"
+      latest-version: "v1.0"
+
+  filesystem:
+    filesystems:
+      -
+        id: "${app.aws.bucket}"
+        uri: "${app.aws.client.uri}"
+      -
+        id: "/"
+        uri: "file:///"
+
+logging:
+  level:
+    org:
+      testcontainers:
+        containers: "debug"
+
+    com:
+      amazonaws: "debug"

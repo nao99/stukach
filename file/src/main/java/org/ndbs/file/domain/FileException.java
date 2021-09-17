@@ -12,6 +12,10 @@ public class FileException extends RuntimeException {
         super(message);
     }
 
+    public FileException(String message, Throwable previous) {
+        super(message, previous);
+    }
+
     public FileException(Throwable previous) {
         super(previous);
     }

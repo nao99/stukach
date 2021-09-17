@@ -28,11 +28,23 @@ app:
       latest-version: "v1.0"
 
   aws:
-    credentials:
-      accessKey: "access key"
-      secretKey: "secret key"
+    client:
+      credentials:
+        accessKey: "access key"
+        secretKey: "secret key"
 
-    protocol: "HTTPS"
-    endpoint: "localhost"
-    signerOverride: "AWSS3V4SignerType"
-    pathStyleAccessEnabled: true
+      protocol: "HTTPS"
+      signerOverride: "AWSS3V4SignerType"
+      pathStyleAccessEnabled: true
+      uri: "s3://${app.aws.client.credentials.accessKey}@localhost"
+
+    bucket: "s3-default"
+
+  filesystem:
+    filesystems:
+      -
+        id: "${app.aws.bucket}"
+        uri: "${app.aws.client.uri}"
+      -
+        id: "/"
+        uri: "file:///"

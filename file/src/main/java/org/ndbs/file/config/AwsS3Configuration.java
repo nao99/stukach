@@ -1,5 +1,6 @@
 package org.ndbs.file.config;
 
+import com.upplication.s3fs.AmazonS3Factory;
 import com.upplication.s3fs.S3FileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -7,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.HashMap;
@@ -23,8 +23,6 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties({AwsS3ConfigurationProperties.class})
 public class AwsS3Configuration {
-    private static final String S3_URI_PATTERN = "s3://%s@%s";
-
     private final AwsS3ConfigurationProperties s3ConfigurationProperties;
 
     @Autowired
@@ -32,35 +30,12 @@ public class AwsS3Configuration {
         this.s3ConfigurationProperties = s3ConfigurationProperties;
     }
 
-    @Bean
+    @Bean("amazonS3FileSystem")
     public FileSystem amazonS3FileSystem() throws IOException {
-        var s3Uri = buildS3Uri();
+        var s3Uri = s3ConfigurationProperties.getUri();
         var env = mapS3PropertiesToMap();
 
         return FileSystems.newFileSystem(s3Uri, env);
-    }
-
-    /**
-     * Builds a {@link URI} to ease tune the {@link S3FileSystem} <br>
-     * It requires the: <br>
-     *  - s3 (schema) <br>
-     *  - access key (authority) <br>
-     *  - endpoint (host) <br>
-     *
-     * What does a URI consist of - see
-     * <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier#Syntax">this page</a>
-     *
-     * @return an s3 uri
-     */
-    private URI buildS3Uri() {
-        var credentials = s3ConfigurationProperties.getCredentials();
-
-        var accessKey = credentials.getAccessKey();
-        var endpoint = s3ConfigurationProperties.getEndpoint();
-
-        var s3UriString = String.format(S3_URI_PATTERN, accessKey, endpoint);
-
-        return URI.create(s3UriString);
     }
 
     /**
@@ -77,11 +52,11 @@ public class AwsS3Configuration {
 
         var credentials = s3ConfigurationProperties.getCredentials();
 
-        propertiesMap.put("s3fs_access_key", credentials.getAccessKey());
-        propertiesMap.put("s3fs_secret_key", credentials.getSecretKey());
-        propertiesMap.put("s3fs_protocol", s3ConfigurationProperties.getProtocol());
-        propertiesMap.put("s3fs_signer_override", s3ConfigurationProperties.getSignerOverride());
-        propertiesMap.put("s3fs_path_style_access", s3ConfigurationProperties.isPathStyleAccessEnabled());
+        propertiesMap.put(AmazonS3Factory.ACCESS_KEY, credentials.getAccessKey());
+        propertiesMap.put(AmazonS3Factory.SECRET_KEY, credentials.getSecretKey());
+        propertiesMap.put(AmazonS3Factory.PROTOCOL, s3ConfigurationProperties.getProtocol());
+        propertiesMap.put(AmazonS3Factory.SIGNER_OVERRIDE, s3ConfigurationProperties.getSignerOverride());
+        propertiesMap.put(AmazonS3Factory.PATH_STYLE_ACCESS, s3ConfigurationProperties.isPathStyleAccessEnabled());
 
         return propertiesMap;
     }

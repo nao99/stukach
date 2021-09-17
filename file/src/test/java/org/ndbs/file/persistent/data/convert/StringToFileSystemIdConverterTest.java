@@ -23,11 +23,11 @@ class StringToFileSystemIdConverterTest {
         stringToFileSystemIdConverter = new StringToFileSystemIdConverter();
     }
 
-    @DisplayName("Should return \"s3\" filesystem id object if id is \"s3\" string")
+    @DisplayName("Should return \"s3-default\" filesystem id in object if id is \"s3-default\" string")
     @Test
-    void shouldReturnS3FileSystemIdObjectIfIdIsS3String() throws Exception {
+    void shouldReturnS3DefaultFileSystemIdInObjectIfIdIsS3DefaultString() throws Exception {
         // given
-        var fileSystemIdString = "s3";
+        var fileSystemIdString = "s3-default";
         var expectedFileSystemId = FileSystemId.create(fileSystemIdString);
 
         // when

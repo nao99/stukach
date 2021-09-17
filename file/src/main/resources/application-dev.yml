@@ -20,11 +20,23 @@ logging:
 
 app:
   aws:
-    credentials:
-      accessKey: "s3key"
-      secretKey: "s3secret"
+    client:
+      credentials:
+        accessKey: "s3key"
+        secretKey: "s3secret"
 
-    protocol: "HTTP"
-    endpoint: "172.55.1.4:9000"
-    signerOverride: "AWSS3V4SignerType"
-    pathStyleAccessEnabled: true
+      protocol: "HTTP"
+      signerOverride: "AWSS3V4SignerType"
+      pathStyleAccessEnabled: true
+      uri: "s3://${app.aws.client.credentials.accessKey}@172.55.1.4:9000"
+
+    bucket: "s3-default"
+
+  filesystem:
+    filesystems:
+      -
+        id: "${app.aws.bucket}"
+        uri: "${app.aws.client.uri}"
+      -
+        id: "/"
+        uri: "file:///"
