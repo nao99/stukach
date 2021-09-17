@@ -49,6 +49,7 @@ public class DeleteFileServiceImpl implements DeleteFileService {
             logger.warn(e.getMessage());
         } catch (FileSystemIOException e) {
             logger.error(e.getMessage());
+            throw new FileException(e.getMessage(), e);
         }
     }
 }
