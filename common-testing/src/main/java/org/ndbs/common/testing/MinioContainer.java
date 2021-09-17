@@ -6,6 +6,7 @@ import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * MinioContainer class
@@ -22,7 +23,7 @@ public class MinioContainer<SELF extends MinioContainer<SELF>> extends GenericCo
     private final String protocol = "HTTP";
 
     private final String signerOverride = "AWSS3V4SignerType";
-    private final Boolean pathStyleAccessEnabled = true;
+    private final String pathStyleAccessEnabled = "true";
 
     private final String bucket = "s3-default";
 
@@ -39,7 +40,13 @@ public class MinioContainer<SELF extends MinioContainer<SELF>> extends GenericCo
             .withStartupTimeout(Duration.ofSeconds(60));
 
         setCommand("server /data");
+
+        // Bind exposed port (9000 by default) for access to a container from inside
+        var bindingPort = String.format("%d:%d", port, port);
+        var bindingPorts = List.of(bindingPort);
+
         addExposedPorts(port);
+        setPortBindings(bindingPorts);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class MinioContainer<SELF extends MinioContainer<SELF>> extends GenericCo
         return signerOverride;
     }
 
-    public Boolean getPathStyleAccessEnabled() {
+    public String getPathStyleAccessEnabled() {
         return pathStyleAccessEnabled;
     }
 

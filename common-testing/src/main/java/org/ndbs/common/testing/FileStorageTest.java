@@ -37,6 +37,4 @@ public abstract class FileStorageTest {
             testPropertyValues.applyTo(configurableApplicationContext.getEnvironment());
         }
     }
-
-    private FileStorageTest() {}
 }

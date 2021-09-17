@@ -35,6 +35,4 @@ public abstract class DatabaseTest {
             testPropertyValues.applyTo(configurableApplicationContext.getEnvironment());
         }
     }
-
-    private DatabaseTest() {}
 }
