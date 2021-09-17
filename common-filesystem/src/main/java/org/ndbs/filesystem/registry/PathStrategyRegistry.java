@@ -43,4 +43,12 @@ public class PathStrategyRegistry {
 
         return strategies.get(name);
     }
+
+    public void removeStrategy(String name) {
+        if (!hasStrategy(name)) {
+            return;
+        }
+
+        strategies.remove(name);
+    }
 }

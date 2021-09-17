@@ -15,49 +15,24 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @DisplayName("FileSystemId test: Test for the Filesystem Id")
 class FileSystemIdTest {
-    @DisplayName("Should create a filesystem id with \"s3\" id and \"s3\" scheme")
+    @DisplayName("Should create a filesystem id with \"local\"")
     @Test
-    void shouldCreateFileSystemIdWithS3IdAndS3Scheme() throws Exception {
+    void shouldCreateFileSystemIdWithLocalId() throws Exception {
         // given
         var expectedFileSystemIdString = "s3";
-        var expectedFileSystemIdScheme = "s3";
 
         // when
-        var fileSystemId = FileSystemId.create("s3", expectedFileSystemIdScheme);
+        var fileSystemId = FileSystemId.create(expectedFileSystemIdString);
 
         // then
         assertThat(fileSystemId.getId())
             .isEqualTo(expectedFileSystemIdString);
-
-        assertThat(fileSystemId.getScheme())
-            .isEqualTo(expectedFileSystemIdScheme);
     }
 
     @DisplayName("Should throw an exception when passed id is null")
     @Test
     void shouldThrowExceptionWhenPassedIdIsNull() throws Exception {
         // when / then
-        assertThrows(IllegalArgumentException.class, () -> FileSystemId.create(null, "file"));
-    }
-
-    @DisplayName("Should throw an exception when passed scheme is null")
-    @Test
-    void shouldThrowExceptionWhenPassedSchemeIsNull() throws Exception {
-        // when / then
-        assertThrows(IllegalArgumentException.class, () -> FileSystemId.create("local", null));
-    }
-
-    @DisplayName("Should create a local filesystem id")
-    @Test
-    void shouldCreateLocalFileSystemId() throws Exception {
-        // given
-        var expectedFileSystemIdString = "local";
-
-        // when
-        var fileSystemId = FileSystemId.createLocal();
-
-        // then
-        assertThat(fileSystemId.getId())
-            .isEqualTo(expectedFileSystemIdString);
+        assertThrows(IllegalArgumentException.class, () -> FileSystemId.create(null));
     }
 }

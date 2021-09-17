@@ -8,6 +8,7 @@ import org.ndbs.filesystem.domain.path.model.AwesomePathStrategy;
 import org.ndbs.filesystem.domain.path.model.DefaultPathStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -62,5 +63,32 @@ class PathStrategyRegistryTest {
     void shouldThrowExceptionWhenRegistryDoesNotContainStrategy() throws Exception {
         // when / then
         assertThrows(PathStrategyNotFoundException.class, () -> registry.getStrategy("test_path_strategy_name"));
+    }
+
+    @DisplayName("Should remove default strategy from registry if exists")
+    @Test
+    void shouldRemoveDefaultStrategyFromRegistryInExists() throws Exception {
+        // given
+        var strategyName = "awesome_path_strategy";
+        var strategy = AwesomePathStrategy.create(strategyName);
+
+        // when / then
+        registry.addStrategy(strategy);
+        assertThat(registry.hasStrategy(strategyName))
+            .isTrue();
+
+        registry.removeStrategy(strategyName);
+        assertThat(registry.hasStrategy(strategyName))
+            .isFalse();
+    }
+
+    @DisplayName("Should not throw any exception if strategy does not exist in registry")
+    @Test
+    void shouldNotThrowAnyExceptionIfStrategyDoesNotExistInRegistry() throws Exception {
+        // given
+        var strategyName = "non_existed_path_strategy";
+
+        // when / then
+        assertDoesNotThrow(() -> registry.removeStrategy(strategyName));
     }
 }

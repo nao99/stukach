@@ -25,7 +25,7 @@ public class DefaultPathStrategy extends AbstractPathStrategy {
     protected String buildDirectoryPath(File file) throws PathStrategyException {
         var fileId = file.getId();
         if (fileId == null) {
-            throw new PathStrategyException("File's id should be not null");
+            throw new PathStrategyException("File id should be not null");
         }
 
         var fileIdString = fileId.toString();
